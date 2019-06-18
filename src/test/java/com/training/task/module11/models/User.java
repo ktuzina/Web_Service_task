@@ -15,6 +15,10 @@ public class User {
     private Company company;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    public User(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }

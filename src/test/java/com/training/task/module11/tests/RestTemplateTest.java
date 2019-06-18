@@ -9,6 +9,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RestTemplateTest {
 
@@ -39,17 +41,16 @@ public class RestTemplateTest {
     public void checkCompanyName() {
         RestTemplate restTempl = new RestTemplate();
         ResponseEntity<User[]> response = restTempl.getForEntity("https://jsonplaceholder.typicode.com/users", User[].class);
-        Assert.assertEquals(response.getBody()[0].getCompany().getName(), "Romaguera-Crona");
+        List<String> companyNames = Stream.of(response.getBody()).map(user -> user.getCompany().getName()).collect(Collectors.toList());
+        Assert.assertTrue(companyNames.contains("Romaguera-Crona"));
     }
 
     @Test
     public void createUser() {
         RestTemplate restTempl = new RestTemplate();
-        User user = new User();
-        String userName = "testuser";
-        user.setName(userName);
+        User user = new User("testuser");
         HttpEntity<User> request = new HttpEntity<User>(user);
         ResponseEntity<User> response = restTempl.exchange("https://jsonplaceholder.typicode.com/users", HttpMethod.POST, request, User.class);
-        Assert.assertEquals(response.getBody().getName(), userName);
+        Assert.assertEquals(response.getBody().getName(), user.getName());
     }
 }
