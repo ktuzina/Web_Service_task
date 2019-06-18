@@ -1,6 +1,8 @@
 package com.training.task.module11.tests;
 
 import com.training.task.module11.models.User;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.testng.Assert;
@@ -40,4 +42,14 @@ public class RestTemplateTest {
         Assert.assertEquals(response.getBody()[0].getCompany().getName(), "Romaguera-Crona");
     }
 
+    @Test
+    public void createUser() {
+        RestTemplate restTempl = new RestTemplate();
+        User user = new User();
+        String userName = "testuser";
+        user.setName(userName);
+        HttpEntity<User> request = new HttpEntity<User>(user);
+        ResponseEntity<User> response = restTempl.exchange("https://jsonplaceholder.typicode.com/users", HttpMethod.POST, request, User.class);
+        Assert.assertEquals(response.getBody().getName(), userName);
+    }
 }
